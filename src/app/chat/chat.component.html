@@ -1,0 +1,59 @@
+<div class="chat-container">
+  <div class="contacts-list">
+    <div class="contacts-header">
+      <h2>Chats</h2>
+    </div>
+    <div class="contacts-scroll">
+      @for (user of users; track user.uid) {
+        <div class="contact-item" (click)="selectUser(user)" [class.active]="selectedUser?.uid === user.uid">
+          <img [src]="user.photoURL || 'assets/Images/user-icon.svg'" [alt]="user.displayName" class="contact-avatar">
+          <div class="contact-info">
+            <h3>{{ user.displayName }}</h3>
+            <p class="latest-message">{{ latestMessages[user.uid] || 'No messages yet' }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <div class="chat-window">
+    @if (selectedUser) {
+      <div class="chat-header">
+        <div class="user-info">
+          <img [src]="selectedUser.photoURL || 'assets/Images/user-icon.svg'" [alt]="selectedUser.displayName" class="contact-avatar">
+          <div class="user-details">
+            <h2>{{ selectedUser.displayName }}</h2>
+            <p [class.online]="selectedUser.isOnline">• {{ selectedUser.isOnline ? 'Online' : 'Offline' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="messages-scroll-container" #messagesContainer>
+        <div class="messages-container">
+          @for (message of messages; track message.id) {
+            <div class="message-wrapper">
+              <div class="message" [class.sent]="message.senderId === currentUser?.uid" [class.received]="message.senderId !== currentUser?.uid"
+              (click)="toggleMessageTime($event)">
+                @if (message.type === 'text') {
+                  <p>{{ message.content }}</p>
+                } @else if (message.type === 'image') {
+                  <img [src]="message.content" alt="Sent image" class="message-image">
+                }
+              </div>
+              <span class="message-time" [class.sent]="message.senderId === currentUser?.uid" [class.received]="message.senderId !== currentUser?.uid">{{ message.timestamp | date:'short' }}</span>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="message-input">
+        <input type="text" [(ngModel)]="newMessage" placeholder="Type a message..." (keyup.enter)="sendMessage()">
+        <button (click)="sendMessage()">Send</button>
+        <label for="image-upload" class="image-upload-label">📷</label>
+        <input type="file" id="image-upload" (change)="sendImage($event)" accept="image/*" style="display: none;">
+      </div>
+    } @else {
+      <div class="no-chat-selected">
+        <p>Select a user to start chatting</p>
+      </div>
+    }
+  </div>
+</div>

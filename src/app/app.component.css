@@ -1,0 +1,70 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-title {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 30px; /* Adjust this value to match your desired logo size */
+  margin-right: 10px;
+}
+
+.chat-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.chat-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.chat-header a, .chat-header button {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.chat-header a:hover, .chat-header button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-header a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.chat-header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.chat-main {
+  height: calc(100vh - 60px - 40px); /* Adjust based on your header and footer heights */
+  overflow: hidden;
+}
+
+.chat-footer {
+  background-color: #f8f9fa;
+  /* padding: 1rem; */
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6c757d;
+}

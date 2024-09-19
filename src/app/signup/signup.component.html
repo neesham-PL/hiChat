@@ -1,0 +1,32 @@
+<div class="signup-container">
+  <div class="signup-card">
+    <h2>Create an Account</h2>
+    <form (ngSubmit)="signup()">
+      <div class="form-group">
+        <input type="text" id="displayName" [(ngModel)]="displayName" name="displayName" required>
+        <label for="displayName">Display Name</label>
+      </div>
+      <div class="form-group">
+        <input type="email" id="email" [(ngModel)]="email" name="email" required>
+        <label for="email">Email</label>
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" [(ngModel)]="password" name="password" required>
+        <label for="password">Password</label>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'Signing up...' : 'Sign Up' }}
+      </button>
+    </form>
+    <div class="divider">
+      <span>or</span>
+    </div>
+    <button (click)="signUpWithGoogle()" class="btn btn-google" [disabled]="isLoading">
+      <img src="https://jobs.practicelink.com/Content/Images/google-new.svg" alt="Google logo" class="google-logo">
+      {{ isLoading ? 'Signing up...' : 'Sign up with Google' }}
+    </button>
+    <p class="login-link">Already have an account? <a routerLink="/login">Log in</a></p>
+    <div *ngIf="isLoading" class="loader"></div>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </div>
+</div>

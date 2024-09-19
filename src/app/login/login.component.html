@@ -1,0 +1,29 @@
+<div class="login-container">
+  <div class="login-card">
+    <h2>Login</h2>
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <input type="email" id="email" [(ngModel)]="email" name="email" required>
+        <label for="email">Email</label>
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" [(ngModel)]="password" name="password" required>
+        <label for="password">Password</label>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+    <div class="divider"><span>or</span></div>
+    <button (click)="loginWithGoogle()" class="btn btn-google" [disabled]="isLoading">
+      <img src="https://jobs.practicelink.com/Content/Images/google-new.svg" alt="Google logo" class="google-logo">
+      {{ isLoading ? 'Logging in...' : 'Continue with Google' }}
+    </button>
+    @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    }
+    <div class="signup-link">
+      Don't have an account? <a routerLink="/signup">Sign up</a>
+    </div>
+  </div>
+</div>
