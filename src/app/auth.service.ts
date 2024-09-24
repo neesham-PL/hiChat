@@ -22,7 +22,7 @@ interface Users {
 })
 export class AuthService {
   user$: Observable<FirebaseUser | null>;
-
+  private lastMessageTimestamp: { [userId: string]: number } = {};
   constructor() {
     this.user$ = new Observable((subscriber) => {
       return onAuthStateChanged(auth, (user) => {
@@ -147,14 +147,15 @@ export class AuthService {
     });
   }
 
-  sendMessage(senderId: string, receiverId: string, content: string, type: 'text' | 'image') {
+  sendMessage(senderId: string, receiverId: string, content: string, type: 'text' | 'image', senderName: string) {
     const messagesRef = ref(database, 'messages');
     return push(messagesRef, {
       senderId,
       receiverId,
       content,
       type,
-      timestamp: new Date().getTime()
+      timestamp: new Date().getTime(),
+      senderName
     });
   }
 
@@ -202,11 +203,12 @@ export class AuthService {
     return new Observable(observer => {
       const unsubscribe = onChildAdded(messagesQuery, (snapshot) => {
         const message = snapshot.val();
-        if (message.receiverId === userId) {
+        if (message.receiverId === userId && (!this.lastMessageTimestamp[message.senderId] || message.timestamp > this.lastMessageTimestamp[message.senderId])) {
+          this.lastMessageTimestamp[message.senderId] = message.timestamp;
           observer.next(message);
         }
       });
-
+  
       return () => unsubscribe();
     });
   }

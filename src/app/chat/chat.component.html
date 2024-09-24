@@ -4,10 +4,12 @@
       <h2>Chats</h2>
     </div>
     @if (newMessageAlert) {
-      <div class="new-message-alert">
-        New message received!
-        <button (click)="dismissAlert()">Dismiss</button>
-      </div>
+      @for (userId of getNewMessageUserIds(); track userId) {
+        <div class="new-message-alert">
+          New message from {{ newMessages[userId].senderName }}: {{ newMessages[userId].content }}
+          <button (click)="dismissAlert(userId)">Dismiss</button>
+        </div>
+      }
     }
     <div class="contacts-scroll">
       @for (user of users; track user.uid) {

@@ -43,6 +43,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   private shouldScrollToBottom = false;
   latestMessages: { [userId: string]: string } = {};
   newMessageAlert = false;
+  newMessages: { [userId: string]: { content: string, senderName: string } } = {};
 
   constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef,private sanitizer: DomSanitizer) {}
 
@@ -114,7 +115,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   selectUser(user: Users) {
-    // Get the most up-to-date user object
+    delete this.newMessages[user.uid];
+  this.newMessageAlert = Object.keys(this.newMessages).length > 0;
     const selectedUser = this.users.find(u => u.uid === user.uid);
     if (!selectedUser) return;
 
@@ -142,7 +144,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         this.currentUser.uid,
         this.selectedUser.uid,
         this.newMessage,
-        'text'
+        'text',
+        this.currentUser.displayName
       ).then(() => {
         console.log('Message sent successfully');
         this.newMessage = '';
@@ -163,7 +166,8 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.currentUser.uid,
             this.selectedUser.uid,
             e.target.result,
-            'image'
+            'image',
+            this.currentUser.displayName
           );
           this.shouldScrollToBottom = true;
         }
@@ -233,8 +237,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       this.authService.getNewMessages(this.currentUser.uid).subscribe(newMessage => {
         console.log('New message:', newMessage);
         if (newMessage && (!this.selectedUser || newMessage.senderId !== this.selectedUser.uid)) {
+          this.newMessages[newMessage.senderId] = {
+            content: newMessage.content,
+            senderName: newMessage.senderName
+          };
           this.newMessageAlert = true;
-         // this.playAlertSound();
+          this.playAlertSound();
         }
       });
     }
@@ -245,13 +253,18 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     audio.play();
   }
 
-  dismissAlert() {
-    this.newMessageAlert = false;
+  dismissAlert(userId: string) {
+    delete this.newMessages[userId];
+    this.newMessageAlert = Object.keys(this.newMessages).length > 0;
   }
   getSafeImageUrl(url: string): SafeUrl {
     if (!url) {
       return 'assets/Images/user-icon.svg';
     }
     return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  getNewMessageUserIds(): string[] {
+    return Object.keys(this.newMessages);
   }
 }
