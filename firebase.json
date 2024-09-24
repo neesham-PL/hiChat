@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "y",
+    "public": "dist/hi-chat/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

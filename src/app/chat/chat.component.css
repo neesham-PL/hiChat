@@ -246,3 +246,26 @@ p.online {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.new-message-alert {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.user-status {
+  font-size: 0.8em;
+  margin-left: auto;
+}
+
+.online {
+  color: #34c759;
+}
+
+.user-status.offline {
+  color: #666;
+}

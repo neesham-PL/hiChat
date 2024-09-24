@@ -3,6 +3,12 @@
     <div class="contacts-header">
       <h2>Chats</h2>
     </div>
+    @if (newMessageAlert) {
+      <div class="new-message-alert">
+        New message received!
+        <button (click)="dismissAlert()">Dismiss</button>
+      </div>
+    }
     <div class="contacts-scroll">
       @for (user of users; track user.uid) {
         <div class="contact-item" (click)="selectUser(user)" [class.active]="selectedUser?.uid === user.uid">
@@ -11,6 +17,9 @@
             <h3>{{ user.displayName }}</h3>
             <p class="latest-message">{{ latestMessages[user.uid] || 'No messages yet' }}</p>
           </div>
+          <span class="user-status" [class.online]="user.isOnline" [class.offline]="!user.isOnline">
+            • {{ user.isOnline ? 'Online' : 'Offline' }}
+          </span>
         </div>
       }
     </div>
@@ -20,7 +29,7 @@
     @if (selectedUser) {
       <div class="chat-header">
         <div class="user-info">
-          <img [src]="selectedUser.photoURL || 'assets/Images/user-icon.svg'" [alt]="selectedUser.displayName" class="contact-avatar">
+          <img [src]="getSafeImageUrl(selectedUser.photoURL)" [alt]="selectedUser.displayName" class="contact-avatar">
           <div class="user-details">
             <h2>{{ selectedUser.displayName }}</h2>
             <p [class.online]="selectedUser.isOnline">• {{ selectedUser.isOnline ? 'Online' : 'Offline' }}</p>

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 interface Users {
   uid: string;
@@ -41,7 +42,9 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   private shouldScrollToBottom = false;
   latestMessages: { [userId: string]: string } = {};
-  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef) {}
+  newMessageAlert = false;
+
+  constructor(private authService: AuthService, private router: Router, private elementRef: ElementRef,private sanitizer: DomSanitizer) {}
 
   ngOnInit() {
     this.authService.user$.subscribe(user => {
@@ -55,6 +58,7 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
         };
         this.loadUsers();
         this.authService.updateUserStatus(user.uid, true);
+        this.subscribeToNewMessages();
       } else {
         console.log('No user signed in');
         this.router.navigate(['/login']);
@@ -222,5 +226,32 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
       return '[Image]';
     }
     return '';
+  }
+
+  private subscribeToNewMessages() {
+    if (this.currentUser) {
+      this.authService.getNewMessages(this.currentUser.uid).subscribe(newMessage => {
+        console.log('New message:', newMessage);
+        if (newMessage && (!this.selectedUser || newMessage.senderId !== this.selectedUser.uid)) {
+          this.newMessageAlert = true;
+         // this.playAlertSound();
+        }
+      });
+    }
+  }
+
+  playAlertSound() {
+    const audio = new Audio('assets/notification-sound.mp3');
+    audio.play();
+  }
+
+  dismissAlert() {
+    this.newMessageAlert = false;
+  }
+  getSafeImageUrl(url: string): SafeUrl {
+    if (!url) {
+      return 'assets/Images/user-icon.svg';
+    }
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 }

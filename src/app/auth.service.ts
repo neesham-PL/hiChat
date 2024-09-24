@@ -5,7 +5,7 @@ import { collectionData } from 'rxfire/firestore';
 import { Observable, from } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
 import { auth, database } from './firebase.config';
-import { onValue, orderByChild, push, ref, set, query, limitToLast, update } from 'firebase/database';
+import { onValue, orderByChild, push, ref, set, query, limitToLast, update, onChildAdded } from 'firebase/database';
 import { onChildChanged } from 'firebase/database';
 import { onDisconnect } from 'firebase/database';
 
@@ -194,4 +194,21 @@ export class AuthService {
       return () => unsubscribe();
     });
   }
+
+  getNewMessages(userId: string): Observable<any> {
+    const messagesRef = ref(database, 'messages');
+    const messagesQuery = query(messagesRef, orderByChild('timestamp'));
+    
+    return new Observable(observer => {
+      const unsubscribe = onChildAdded(messagesQuery, (snapshot) => {
+        const message = snapshot.val();
+        if (message.receiverId === userId) {
+          observer.next(message);
+        }
+      });
+
+      return () => unsubscribe();
+    });
+  }
+
 }

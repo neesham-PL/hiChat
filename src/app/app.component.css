@@ -57,7 +57,7 @@
 }
 
 .chat-main {
-  height: calc(100vh - 60px - 40px); /* Adjust based on your header and footer heights */
+  height: calc(100vh - 60px - 40px); 
   overflow: hidden;
 }
 
@@ -67,4 +67,17 @@
   text-align: center;
   font-size: 0.9rem;
   color: #6c757d;
+}
+
+.user-status {
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.online {
+  color: green;
+}
+
+.offline {
+  color: #666;
 }
